@@ -21,6 +21,11 @@ REPLACEMENT_LANGUAGES={
     'us':'american'
     }
 
+
+WEIGHTS_SCORE={'samples_rejected_internally':0.4,
+                'speed_to_book':0.3,
+                'average_review':0.3}
+
 ##hugging-face model sentence-transformers
 MODEL_NAME_HF="all-MiniLM-L12-v1"
 
