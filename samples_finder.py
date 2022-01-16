@@ -43,9 +43,29 @@ class SearchRecommender:
         return self.samples_embeddings.drop(columns=['avg_embeddings','no_tag']).sort_values(by="similarity",ascending=False).merge(self.pros[['pro_id','performance_score']],on="pro_id",how="inner")
 
     
+
     @staticmethod
-    def get_batch_suggestions(df,by_batch_size: int=50):
-        pass
+    def results_by_batch(df: pd.DataFrame,batch_size: int=50):
+
+        """creates a list of pandas dataframes, each item has a fixed-size based on @param batch_size. It also avoids duplicated pro_id per batch.
+        returns a tuple, first position for average cosine similarity of results to search, and a list of pandas dataframes which contains every fixed-size batch.
+        """
+        df_no_duplicates=df[~df.duplicated(subset='pro_id', keep="first")]
+        n_chunks=df_no_duplicates.shape[0]//batch_size
+        chunks_data=[df_no_duplicates[(i*batch_size):((i+1)*batch_size)-1] for i in range(0,n_chunks+1)]
+        similarities=[batch['similarity'].mean() for batch in chunks_data]
+        return similarities,chunks_data
+
+
+    def results_generator(self,df: pd.DataFrame,batch_size: int=50):
+        """
+        generator: given a pandas df,creates fixed-size batch according to @param batch_size. It also avoids duplicated pro_id per batch.
+        Every iteration returns a tuple, average cosine similarity of the batch and a fixed-size samples batch in a pandas dataframe.
+        """
+        sims,chunks=self.results_by_batch(df=df,batch_size=batch_size)
+        
+        for sim,chunk in zip(sims,chunks):
+                yield sim,chunk
 
 
 if __name__=="__main__":

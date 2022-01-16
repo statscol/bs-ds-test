@@ -51,15 +51,6 @@ def decode_language_code(lang_code:str,decoder_dict=REPLACEMENT_LANGUAGES,sep="-
 def cosine_sim(vec1,vec2):
     return np.dot(vec1, vec2)/(np.linalg.norm(vec1)*np.linalg.norm(vec2))
 
-def result_generator(df: pd.DataFrame,batch_size: int=50):
-    """
-    generator: creates batch with size @param batch_size given a pandas df
-    """
-    n_chunks=df.shape[0]//batch_size
-    chunks_data=[df[(i*batch_size):((i+1)*batch_size)-1] for i in range(0,n_chunks+1)]
-    for chunk in chunks_data:
-        yield chunk
-
     
 def consume_data(generator):
     try:
