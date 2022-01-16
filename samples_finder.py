@@ -6,7 +6,6 @@ import argparse
 PRO_SCORES=pd.read_pickle('pro_scores.pkl')
 SAMPLES_COMPOSED_DATA=pd.read_pickle('samples_composed_data.pkl')
 
-
 class SearchRecommender:
     
     def __init__(self):
@@ -40,7 +39,8 @@ class SearchRecommender:
         """  
         search_clean=clean_sentence(search)
         self.generate_similarities(search=search_clean)
-        return self.samples_embeddings.drop(columns=['avg_embeddings','no_tag']).sort_values(by="similarity",ascending=False).merge(self.pros[['pro_id','performance_score']],on="pro_id",how="inner")
+        ##sort values by similarity and performance_score
+        return self.samples_embeddings.drop(columns=['avg_embeddings','no_tag']).merge(self.pros,on="pro_id",how="inner").sort_values(by=["similarity","performance_score"],ascending=False)
 
     
 
@@ -52,7 +52,7 @@ class SearchRecommender:
         """
         df_no_duplicates=df[~df.duplicated(subset='pro_id', keep="first")]
         n_chunks=df_no_duplicates.shape[0]//batch_size
-        chunks_data=[df_no_duplicates[(i*batch_size):((i+1)*batch_size)-1] for i in range(0,n_chunks+1)]
+        chunks_data=[df_no_duplicates[(i*batch_size):((i+1)*batch_size)-1].sort_values(by="performance_score",ascending=False) for i in range(0,n_chunks+1)]
         similarities=[batch['similarity'].mean() for batch in chunks_data]
         return similarities,chunks_data
 
