@@ -1,6 +1,5 @@
 # bs-ds-test
 
-======
 
 ## Code & Demo
 
@@ -10,12 +9,11 @@ Available in the following notebooks:
 - [02-Demo-sample finder.ipynb](https://github.com/statscol/bs-ds-test/blob/main/02-Demo-sample%20finder.ipynb "Search Recommender")
 
 
-======
+
 ## Results
 
 Recommendations for every search sample provided can be found in recommendations/<your_search_string_with_underscores>
 
-======
 
 ## Note
 
